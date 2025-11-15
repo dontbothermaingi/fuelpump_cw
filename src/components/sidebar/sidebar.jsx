@@ -10,7 +10,7 @@ function SideBar() {
     { name: "Buy Fuel", rt: "/buy-fuel" },
     { name: "Edit Pumps" },
     { name: "View Report" },
-    { name: "Fuel Vehicles" },
+    { name: "Fuel Vehicles", rt: "/fuel-vehicle" },
     { name: "Write Invoice" },
   ];
 

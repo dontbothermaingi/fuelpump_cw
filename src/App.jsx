@@ -6,6 +6,7 @@ import Topbar from "./components/ui/topbar";
 import Login from "./components/authentication/login";
 import { useMediaQuery } from "@mui/material";
 import BuyFuel from "./components/Fuel/buyfuel";
+import FuelVehicles from "./components/Fuel/fuelvehicles";
 
 function App() {
   const isMobile = useMediaQuery("(max-width:768px)");
@@ -36,6 +37,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/buy-fuel" element={<BuyFuel />} />
+            <Route path="/fuel-vehicle" element={<FuelVehicles />} />
           </Routes>
         </section>
       </main>
