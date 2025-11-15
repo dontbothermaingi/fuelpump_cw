@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "IT Bold";
+  src: url("./assets/Inter_18pt-Bold.ttf");
+}
+
+@font-face {
+  font-family: "IT Medium";
+  src: url("./assets/Inter_18pt-Medium.ttf");
+}
+
+@font-face {
+  font-family: "IT Regular";
+  src: url("./assets/Inter_18pt-Regular.ttf");
+}
+
+@font-face {
+  font-family: "IT Light";
+  src: url("./assets//Inter_18pt-Light.ttf");
+}
