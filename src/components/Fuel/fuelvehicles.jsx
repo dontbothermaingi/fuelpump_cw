@@ -97,7 +97,7 @@ function FuelVehicles() {
                 className="block text-sm  text-gray-700 mb-1"
                 style={{ fontFamily: "IT Regular" }}
               >
-                Pump Station
+                Pump Name
               </label>
               <select
                 id="pump_id"
@@ -185,7 +185,8 @@ function FuelVehicles() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full mt-6 px-5 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 transition duration-150 ease-in-out focus:outline-none focus:ring-4 focus:ring-indigo-300"
+            style={{ fontFamily: "IT Medium" }}
+            className="w-full mt-6 px-5 py-3 bg-indigo-600 text-white rounded-lg shadow-lg hover:bg-indigo-700 transition duration-150 ease-in-out focus:outline-none focus:ring-4 focus:ring-indigo-300"
           >
             Submit Fuel Transaction
           </button>
@@ -193,7 +194,7 @@ function FuelVehicles() {
           {/* Display selected pump name (Optional UX feedback) */}
           {formData.pump_name && (
             <p
-              style={{ fontFamily: "IT Medium" }}
+              style={{ fontFamily: "IT Light" }}
               className="text-sm text-gray-500 mt-4 text-center"
             >
               You are recording fuel for {formData.pump_name}.
