@@ -8,7 +8,7 @@ function SideBar() {
   const menuItems = [
     { name: "Dashboard", rt: "/" },
     { name: "Buy Fuel", rt: "/buy-fuel" },
-    { name: "Edit Pumps" },
+    { name: "Pumps", rt: "/pumps" },
     { name: "View Report" },
     { name: "Fuel Vehicles", rt: "/fuel-vehicle" },
     { name: "Write Invoice" },

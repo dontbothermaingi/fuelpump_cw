@@ -1,10 +1,28 @@
+import PumpCard from "../pumps/pumpcard";
 import Card from "../ui/card";
 
 const pumps = [
-  { id: "A", fuel: "Petrol", quantity: 4000 },
-  { id: "B", fuel: "Diesel", quantity: 3000 },
-  { id: "C", fuel: "Petrol", quantity: 5000 },
-  { id: "D", fuel: "Diesel", quantity: 2500 },
+  {
+    id: "PMP001",
+    name: "Pump Alpha (Diesel)",
+    type_of_fuel: "Diesel",
+    current_reading: 234678,
+    litres_capacity: 1200,
+  },
+  {
+    id: "PMP002",
+    name: "Pump Beta (Petrol)",
+    type_of_fuel: "Petrol",
+    current_reading: 987654,
+    litres_capacity: 1500,
+  },
+  {
+    id: "PMP003",
+    name: "Pump Gamma (Diesel)",
+    type_of_fuel: "Diesel",
+    current_reading: 50000,
+    litres_capacity: 800,
+  },
 ];
 
 const recentTransactions = [
@@ -58,16 +76,11 @@ function Dashboard() {
         <h2 className="text-xl font-semibold mb-4">Pumps Overview</h2>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           {pumps.map((pump) => (
-            <Card
+            <PumpCard
               key={pump.id}
-              className="bg-gray-800 text-white"
-              title={`Pump ${pump.id}`}
-              description={`${pump.quantity} Litres`}
-            >
-              <button className="group hover:bg-gray-300 bg-white text-black px-4 py-1 rounded-md mt-2">
-                View
-              </button>
-            </Card>
+              pump={pump}
+              // onViewDetails={handleViewDetails}
+            />
           ))}
         </div>
       </div>

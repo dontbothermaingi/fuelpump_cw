@@ -7,6 +7,7 @@ import Login from "./components/authentication/login";
 import { useMediaQuery } from "@mui/material";
 import BuyFuel from "./components/Fuel/buyfuel";
 import FuelVehicles from "./components/Fuel/fuelvehicles";
+import LandingPumpPage from "./components/pumps/landing";
 
 function App() {
   const isMobile = useMediaQuery("(max-width:768px)");
@@ -38,6 +39,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/buy-fuel" element={<BuyFuel />} />
             <Route path="/fuel-vehicle" element={<FuelVehicles />} />
+            <Route path="/pumps" element={<LandingPumpPage />} />
           </Routes>
         </section>
       </main>

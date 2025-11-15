@@ -75,8 +75,8 @@ function CreatePumps() {
   }
 
   return (
-    <div className="flex justify-center p-8 bg-gray-50 min-h-screen">
-      <div className="w-full max-w-lg bg-white p-8 shadow-2xl rounded-xl">
+    <div className="flex justify-center">
+      <div className="w-full p-5 bg-white">
         {" "}
         {/* Added max-w-lg and padding */}
         <h2 className="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">
