@@ -96,8 +96,8 @@ function EditPumps() {
   }
 
   return (
-    <div className="flex justify-center lg:pt-10 bg-gray-50 ">
-      <div className="w-full max-w-lg bg-white p-8 shadow-2xl rounded-xl">
+    <div className="flex justify-center">
+      <div className="w-full p-4">
         {" "}
         {/* Added max-w-lg and padding for better UI */}
         <h2 className="text-3xl text-gray-800 mb-6 border-b pb-2">EDIT PUMP</h2>

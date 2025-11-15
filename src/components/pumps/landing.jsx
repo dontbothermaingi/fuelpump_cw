@@ -3,6 +3,7 @@ import { useState } from "react";
 import PumpCard from "./pumpcard";
 import CreatePumps from "./createpumps";
 import { Dialog } from "@mui/material";
+import { useNavigate } from "react-router";
 // Assuming you'll create a PumpCard component (see section 3)
 // import PumpCard from './PumpCard';
 
@@ -33,23 +34,18 @@ const MOCK_PUMPS = [
 
 function LandingPumpPage() {
   const [pumps, setPumps] = useState(MOCK_PUMPS);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   // Function to handle navigation (replace with actual routing like react-router-dom)
   const handleViewDetails = (pumpId) => {
-    console.log(`Navigating to details for Pump ID: ${pumpId}`);
-    // In a real application, you'd use: navigate(`/pumps/${pumpId}`);
-    alert(`Showing details for Pump ID: ${pumpId}`);
+    navigate(`/pump_details/${pumpId}`);
   };
 
-  // Function to simulate pump creation success (to update the list)
-  const handleNewPumpCreated = (newPump) => {
-    // In a real app, you'd refetch the list or add the new pump
-    console.log("New pump created:", newPump);
-    // For mock data, we just close the modal
-    setIsModalOpen(false);
-    // setPumps(prevPumps => [...prevPumps, newPump]);
+  const handleClose = () => {
+    setOpen(false);
   };
+
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       {/* HEADER AND CTA BUTTON */}
@@ -61,8 +57,8 @@ function LandingPumpPage() {
           Fuel Pumps Overview
         </h1>
         <button
-          onClick={() => setIsModalOpen(!isModalOpen)}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition duration-150"
+          onClick={() => setOpen(true)}
+          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition duration-150 cursor-pointer"
           style={{ fontFamily: "IT Bold" }}
         >
           + New Pump
@@ -81,16 +77,11 @@ function LandingPumpPage() {
       </div>
 
       {/* DIALOG POPUP */}
-      {isModalOpen && (
-        <Dialog
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          fullWidth
-          maxWidth="sm"
-        >
+      {open && (
+        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
           <div className="flex justify-end p-3">
             <button
-              onClick={() => setIsModalOpen(false)}
+              onClick={handleClose}
               className="text-gray-600 hover:text-black text-xl font-bold"
             >
               ×

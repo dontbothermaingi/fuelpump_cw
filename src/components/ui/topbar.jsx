@@ -8,7 +8,7 @@ function Topbar() {
   return (
     <>
       {/* Topbar */}
-      <div className="border-b border-black flex items-center justify-between lg:justify-center py-4 px-4 bg-white">
+      <div className="border-b border-black flex items-center justify-between lg:justify-center py-5.5 px-4 bg-white">
         {/* Hamburger button (only on mobile) */}
         <button
           onClick={() => setIsOpen(!isOpen)}
