@@ -9,9 +9,8 @@ function SideBar() {
     { name: "Dashboard", rt: "/" },
     { name: "Buy Fuel", rt: "/buy-fuel" },
     { name: "Pumps", rt: "/pumps" },
-    { name: "View Report" },
     { name: "Fuel Vehicles", rt: "/fuel-vehicle" },
-    { name: "Write Invoice" },
+    { name: "View Report", rt: "/report" },
   ];
 
   function barItem(item, onClick) {

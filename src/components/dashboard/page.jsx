@@ -8,6 +8,7 @@ const pumps = [
     type_of_fuel: "Diesel",
     current_reading: 234678,
     litres_capacity: 1200,
+    price_per_liter: 2.58,
   },
   {
     id: "PMP002",
@@ -15,6 +16,7 @@ const pumps = [
     type_of_fuel: "Petrol",
     current_reading: 987654,
     litres_capacity: 1500,
+    price_per_liter: 2.02,
   },
   {
     id: "PMP003",
@@ -22,6 +24,7 @@ const pumps = [
     type_of_fuel: "Diesel",
     current_reading: 50000,
     litres_capacity: 800,
+    price_per_liter: 1.76,
   },
 ];
 

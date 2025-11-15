@@ -6,7 +6,6 @@ function BuyFuel() {
     vendor_name: "",
     vendor_email: "",
     date: "",
-    bill_items: "",
   });
 
   const [itemsData, setItemsData] = useState([
@@ -93,11 +92,6 @@ function BuyFuel() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    const finalFormData = {
-      ...formData,
-      bill_items: itemsData,
-    };
-
     // Replace alert with custom UI message later
     console.log("Submitting Invoice:", finalFormData);
     alert("Invoice submitted successfully! Check console for data.");
@@ -105,7 +99,7 @@ function BuyFuel() {
     // fetch("back-end/invoices", {
     //   method: "POST",
     //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(finalFormData),
+    //   body: JSON.stringify(formData),
     // });
   }
 

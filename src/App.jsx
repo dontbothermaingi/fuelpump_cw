@@ -9,6 +9,7 @@ import BuyFuel from "./components/Fuel/buyfuel";
 import FuelVehicles from "./components/Fuel/fuelvehicles";
 import LandingPumpPage from "./components/pumps/landing";
 import PumpDetailedView from "./components/pumps/pumpdetailedview";
+import ReportPage from "./components/reports/reportpage";
 
 function App() {
   const isMobile = useMediaQuery("(max-width:768px)");
@@ -41,6 +42,7 @@ function App() {
             <Route path="/buy-fuel" element={<BuyFuel />} />
             <Route path="/fuel-vehicle" element={<FuelVehicles />} />
             <Route path="/pumps" element={<LandingPumpPage />} />
+            <Route path="/report" element={<ReportPage />} />
             <Route
               path="/pump_details/:pumpId"
               element={<PumpDetailedView />}

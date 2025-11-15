@@ -7,6 +7,7 @@ function FuelVehicles() {
     pump_id: "",
     litres: "",
     vehcile_number: "",
+    price_per_liter: "",
     date: "",
   });
 
@@ -29,6 +30,7 @@ function FuelVehicles() {
         ...prevFormdata,
         pump_id: value, // Use 'value' here
         pump_name: selectedPump ? selectedPump.name : "",
+        price_per_liter: selectedPump ? selectedPump.price_per_liter : 1,
       }));
     } else {
       setFormData((prevFormdata) => ({
@@ -140,7 +142,7 @@ function FuelVehicles() {
           </div>
 
           {/* Group 2: Litres and Date */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             {/* Litres Input */}
             <div>
               <label

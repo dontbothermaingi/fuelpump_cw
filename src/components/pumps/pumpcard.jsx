@@ -38,6 +38,13 @@ function PumpCard({ pump, onViewDetails }) {
           Capacity: {new Intl.NumberFormat().format(pump.litres_capacity)}{" "}
           Litres
         </p>
+        <p style={{ fontFamily: "IT Medium" }} className="text-lg">
+          Price Per Liter:{" "}
+          {new Intl.NumberFormat("en-AE", {
+            style: "currency",
+            currency: "AED",
+          }).format(pump.price_per_liter)}
+        </p>
       </div>
 
       <button

@@ -6,6 +6,7 @@ function CreatePumps() {
     pump_reading: "",
     type_of_fuel: "",
     litres: "",
+    price_per_litre: "",
     // date will be set on submit
   });
 
@@ -60,6 +61,7 @@ function CreatePumps() {
             pump_reading: "",
             type_of_fuel: "",
             litres: "",
+            price_per_litre: "",
           });
         } else {
           // Attempt to read server error message if available
@@ -141,6 +143,26 @@ function CreatePumps() {
                 onChange={handleChange}
                 name="litres"
                 placeholder="e.g., 1200"
+                step="0.01"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            {/* Price Per Litre */}
+            <div>
+              <label
+                htmlFor="price_per_litre"
+                className="block text-sm font-semibold text-gray-700 mb-1"
+              >
+                Price Per Litre
+              </label>
+              <input
+                type="number"
+                id="price_per_litre"
+                value={formData.price_per_litre}
+                onChange={handleChange}
+                name="price_per_litre"
+                placeholder="e.g., 2.58"
                 step="0.01"
                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
