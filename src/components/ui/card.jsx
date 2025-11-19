@@ -8,6 +8,7 @@ function Card({
 }) {
   return (
     <div
+      style={{ fontFamily: "IT Regular" }}
       className={`text-white shadow-md rounded-lg overflow-hidden ${className}`}
     >
       <div className="p-4">

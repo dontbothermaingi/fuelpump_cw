@@ -87,12 +87,14 @@ function Dashboard() {
         <Card
           className="bg-blue-600 text-white"
           title="Total Fuel Bought"
-          description={totalFuelBought + " Litres"}
+          description={
+            new Intl.NumberFormat().format(totalFuelBought) + " Litres"
+          }
         />
         <Card
           className="bg-green-600 text-white"
           title="Total Fuel Sold"
-          description={totaFuelSold + " Litres"}
+          description={new Intl.NumberFormat().format(totaFuelSold) + " Litres"}
         />
       </div>
 
