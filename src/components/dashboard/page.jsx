@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import PumpCard from "../pumps/pumpcard";
 import Card from "../ui/card";
+import { useNavigate } from "react-router";
 
 function Dashboard() {
   const [pumps, setPumps] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [billItems, setBillItems] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch pumps data from the backend API
@@ -22,6 +26,60 @@ function Dashboard() {
       .catch((error) => console.error("Error fetching pumps:", error));
   }, []);
 
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/users")
+      .then((response) => response.json())
+      .then((data) => setUsers(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/bill_items")
+      .then((response) => response.json())
+      .then((data) => setBillItems(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
+  //useCallback stores a function in memory so React does not recreate it every time the component re-renders.
+
+  const totalFuelBought = useMemo(() => {
+    return billItems.reduce((total, item) => total + Number(item.litres), 0);
+  }, [billItems]);
+
+  const totaFuelSold = useMemo(() => {
+    return transactions.reduce((total, tx) => total + Number(tx.litres), 0);
+  }, [transactions]);
+
+  const findFuelType = useCallback(
+    (pumpId) => {
+      const pump = pumps.find((p) => p.id === pumpId);
+      return pump ? pump.type_of_fuel : "Unknown";
+    },
+    [pumps]
+  );
+
+  const findUserName = useCallback(
+    (userId) => {
+      const user = users.find((u) => u.id == userId);
+      return user ? user.name : "Unknown";
+    },
+    [users]
+  );
+
+  const editDate = useCallback((dateString) => {
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  }, []);
+
+  const handleViewDetails = useCallback(
+    (pumpId) => {
+      navigate(`/pump_details/${pumpId}`);
+    },
+    [navigate]
+  );
+
   return (
     <div className="p-6 space-y-8">
       {/* Summary Stats */}
@@ -29,17 +87,12 @@ function Dashboard() {
         <Card
           className="bg-blue-600 text-white"
           title="Total Fuel Bought"
-          description="15,000 Litres"
+          description={totalFuelBought + " Litres"}
         />
         <Card
           className="bg-green-600 text-white"
           title="Total Fuel Sold"
-          description="7,500 Litres"
-        />
-        <Card
-          className="bg-yellow-600 text-black"
-          title="Revenue"
-          description="$25,000"
+          description={totaFuelSold + " Litres"}
         />
       </div>
 
@@ -51,37 +104,59 @@ function Dashboard() {
             <PumpCard
               key={pump.id}
               pump={pump}
-              // onViewDetails={handleViewDetails}
+              onViewDetails={handleViewDetails}
             />
           ))}
         </div>
       </div>
 
       {/* Recent Transactions */}
-      <div>
-        <h2 className="text-xl font-semibold mb-4">Recent Transactions</h2>
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border p-2">Vehicle</th>
-              <th className="border p-2">Fuel</th>
-              <th className="border p-2">Quantity (L)</th>
-              <th className="border p-2">Staff</th>
-              <th className="border p-2">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((tx, idx) => (
-              <tr key={idx} className="text-center">
-                <td className="border p-2">{tx.vehicle}</td>
-                <td className="border p-2">{tx.fuel}</td>
-                <td className="border p-2">{tx.qty}</td>
-                <td className="border p-2">{tx.staff}</td>
-                <td className="border p-2">{tx.date}</td>
+      <div className="mb-8">
+        <h3
+          style={{ fontFamily: "IT Medium" }}
+          className="text-xl mb-3 text-gray-700"
+        >
+          Pump Profitability Rank
+        </h3>
+        <div className="overflow-x-auto rounded-lg shadow-md">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-200">
+              <tr>
+                {["Vehicle", "Fuel", "Quantity (L)", "Staff", "Date"].map(
+                  (h) => (
+                    <th
+                      key={h}
+                      className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
+                    >
+                      {h}
+                    </th>
+                  )
+                )}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-100">
+              {transactions.map((tx) => (
+                <tr key={tx.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">
+                    {tx.vehicle_number}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600">
+                    {findFuelType(tx.pump_id)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600">
+                    {tx.litres}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600">
+                    {findUserName(tx.user_id)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {editDate(tx.date)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

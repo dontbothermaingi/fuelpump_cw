@@ -157,8 +157,6 @@ function ReportPage() {
 
   const topStaff = staffPerformance.length > 0 ? staffPerformance[0] : null;
 
-  // --- RENDERING ---
-
   // Determine profit/loss color
   const profitColor =
     financialSummary.grossProfit >= 0 ? "text-green-600" : "text-red-600";
@@ -179,7 +177,7 @@ function ReportPage() {
         </p>
       </header>
 
-      {/* --- FINANCIAL OVERVIEW --- */}
+      {/* Ovverviw */}
       <section className="mb-10">
         <h2
           style={{ fontFamily: "IT Bold" }}
@@ -206,7 +204,7 @@ function ReportPage() {
         </div>
       </section>
 
-      {/* --- OPERATIONAL REPORTS --- */}
+      {/* Operation report*/}
       <section className="mb-10">
         <h2
           style={{ fontFamily: "IT Bold" }}
@@ -215,7 +213,7 @@ function ReportPage() {
           Operational Highlights
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Most Profitable Pump Card */}
+          {/* Most Profitable Pump */}
           <div className="bg-white p-6 rounded-xl shadow-lg border-b-4 border-green-500">
             <h3
               style={{ fontFamily: "IT Medium" }}
@@ -261,7 +259,7 @@ function ReportPage() {
             )}
           </div>
 
-          {/* Top Selling Staff Member Card */}
+          {/* Top Selling staff */}
           <div className="bg-white p-6 rounded-xl shadow-lg border-b-4 border-blue-500">
             <h3
               style={{ fontFamily: "IT Medium" }}
@@ -302,7 +300,7 @@ function ReportPage() {
         </div>
       </section>
 
-      {/* --- DETAILED PERFORMANCE TABLES --- */}
+      {/* Tbale ananlysis */}
       <section>
         <h2
           style={{ fontFamily: "IT Bold" }}
@@ -382,7 +380,6 @@ function ReportPage() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-200">
                 <tr>
-                  {/* ADDED ROLE COLUMN */}
                   {["Staff Name", "Role", "User ID", "Litres Sold"].map((h) => (
                     <th
                       key={h}

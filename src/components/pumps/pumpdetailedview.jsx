@@ -1,105 +1,13 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import EditPumps from "./editpump";
 import { Dialog } from "@mui/material";
 import { useParams } from "react-router";
 
-const PUMP_TRANSACTIONS = [
-  {
-    id: 5,
-    user_id: "U345",
-    pump_id: "PMP001",
-    litres: "200",
-    vehcile_number: "1234T",
-    date: "2024-11-15",
-  },
-  {
-    id: 4,
-    user_id: "U101",
-    pump_id: "PMP001",
-    litres: "150",
-    vehcile_number: "5678U",
-    date: "2024-11-14",
-  },
-  {
-    id: 3,
-    user_id: "U789",
-    pump_id: "PMP001",
-    litres: "300",
-    vehcile_number: "9012V",
-    date: "2024-11-13",
-  },
-  {
-    id: 2,
-    user_id: "U222",
-    pump_id: "PMC001",
-    litres: "200",
-    vehcile_number: "1111X",
-    date: "2024-11-12",
-  }, // Filtered out
-  {
-    id: 1,
-    user_id: "U345",
-    pump_id: "PMP001",
-    litres: "50",
-    vehcile_number: "2222Y",
-    date: "2024-11-11",
-  },
-];
-
-// Reusable component for displaying the transaction list.
-
-function TransactionTable({ transactions }) {
-  if (transactions.length === 0) {
-    return (
-      <p className="text-gray-500 p-4">No transactions found for this pump.</p>
-    );
-  }
-
-  return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Date
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Vehicle #
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Litres
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              User ID
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {transactions.map((t) => (
-            <tr key={t.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {t.date}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {t.vehcile_number}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {t.litres}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {t.user_id}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
 function PumpDetailedView() {
   const [open, setOpen] = useState(false);
   const [pump, setPump] = useState({});
+  const [users, setUsers] = useState([]);
+  const [fuelTransactions, setFuelTransactions] = useState([]);
   const { pumpId } = useParams();
 
   const handleClose = () => {
@@ -117,10 +25,39 @@ function PumpDetailedView() {
       .catch((error) => console.error("Error fetching pump details:", error));
   }, [pumpId]);
 
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/users")
+      .then((response) => response.json())
+      .then((data) => setUsers(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/fuel_transactions")
+      .then((response) => response.json())
+      .then((data) => setFuelTransactions(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
+  const findUserName = useCallback(
+    (userId) => {
+      const user = users.find((u) => u.id == userId);
+      return user ? user.name : "Unknown";
+    },
+    [users]
+  );
+
+  const editDate = useCallback((dateString) => {
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  }, []);
+
   //Data Filtering and Sorting Logic
   const transactions = useMemo(() => {
     // 1. Filter: Keep only transactions belonging to this pump
-    const filtered = PUMP_TRANSACTIONS.filter((t) => t.pump_id === pump.id);
+    const filtered = fuelTransactions.filter((t) => t.pump_id == pump.id);
 
     // 2. Sort: Sort by date (latest first). We convert the "YYYY-MM-DD" string to a Date object.
     const sorted = filtered.sort((a, b) => {
@@ -128,7 +65,7 @@ function PumpDetailedView() {
     });
 
     return sorted;
-  }, []); // Recalculate only if PUMP_TRANSACTIONS changes (or prop change in a real app)
+  }, [fuelTransactions]); // Recalculate only if fuel_transactions changes
 
   return (
     <div className="p-6 md:p-10 bg-gray-100 min-h-screen">
@@ -192,11 +129,15 @@ function PumpDetailedView() {
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">
             Transaction History ({transactions.length})
           </h2>
-          <TransactionTable transactions={transactions} />
+          <TransactionTable
+            findUserName={findUserName}
+            editDate={editDate}
+            transactions={transactions}
+          />
         </section>
       </div>
 
-      {/* 4. EDIT MODAL POPUP */}
+      {/* 4. EDIt Dialog */}
       {open && (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
           <div className="flex justify-end p-3">
@@ -237,5 +178,56 @@ const DetailItem = ({
     </p>
   </div>
 );
+
+// Reusable component for displaying the transaction list.
+
+function TransactionTable({ transactions, editDate, findUserName }) {
+  if (transactions.length === 0) {
+    return (
+      <p className="text-gray-500 p-4">No transactions found for this pump.</p>
+    );
+  }
+
+  return (
+    <div className="overflow-x-auto rounded-lg border border-gray-200">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Date
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Vehicle #
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Litres
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              User ID
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {transactions.map((t) => (
+            <tr key={t.id} className="hover:bg-gray-50">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                {editDate(t.date)}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {t.vehicle_number}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {t.litres}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {findUserName(t.user_id)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
 export default PumpDetailedView;
