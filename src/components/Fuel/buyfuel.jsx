@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ViewBills from "./viewBills";
 
 function BuyFuel() {
@@ -7,26 +7,45 @@ function BuyFuel() {
     vendor_name: "",
     vendor_email: "",
     date: "",
+    total_amount: 0,
   });
-
   const [itemsData, setItemsData] = useState([
     {
       pump_id: "",
-      pump_name: "",
       bill_id: "",
       litres: "",
       price_per_litre: "",
     },
   ]);
+  const [pumps, setPumps] = useState([]);
+  const [billId, setBillId] = useState(null);
+
+  // Retrieve user info from localStorage
+  const userString = localStorage.getItem("user"); // string from localStorage
+  const user = userString ? JSON.parse(userString) : null; // convert to object
+  const user_id = user?.id; // optional chaining in case user is null
 
   const [istable, setIsTable] = useState(true);
 
-  const availablePumps = [
-    { id: "PMP001", name: "Pump Alpha" },
-    { id: "PMP002", name: "Pump Beta" },
-    { id: "PMP003", name: "Pump Gamma" },
-    { id: "PMP004", name: "Pump Delta" },
-  ];
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/pumps")
+      .then((response) => response.json())
+      .then((data) => setPumps(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/bills")
+      .then((response) => response.json())
+      .then((data) => {
+        const bill_id = data.length > 0 ? data.length + 1 : 1;
+        console.log("Bill_id:", bill_id);
+        setBillId(bill_id);
+      })
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -46,11 +65,9 @@ function BuyFuel() {
       let updatedItem = { ...updatedItems[index] };
 
       if (name === "pump_id") {
-        const selectedPump = availablePumps.find((p) => p.id === value);
         updatedItem = {
           ...updatedItem,
           pump_id: value,
-          pump_name: selectedPump ? selectedPump.name : "",
         };
       } else {
         updatedItem = {
@@ -69,7 +86,6 @@ function BuyFuel() {
       ...prevItemsData,
       {
         pump_id: "",
-        pump_name: "",
         bill_id: "",
         litres: "",
         price_per_litre: "",
@@ -95,24 +111,31 @@ function BuyFuel() {
   function handleSubmit(e) {
     e.preventDefault();
 
+    const finalFormData = {
+      ...formData,
+      user_id: user_id,
+      total_amount: calculateTotal(),
+    };
+
     // 1. Send invoice header first
     fetch("http://localhost:5000/bills", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(finalFormData),
     })
       .then((res) => res.json())
-      .then((billData) => {
-        const billId = billData.id; // assume server returns inserted bill ID
-
+      .then(() => {
         // 2. Prepare items with billId
         const itemsWithBillId = itemsData.map((item) => ({
           ...item,
           bill_id: billId,
         }));
 
+        console.log("Bill created with ID:", finalFormData);
+        console.log("Prepared items with bill ID:", itemsWithBillId);
+
         // 3. Send bill items
-        return fetch("http://localhost:5000/billitems", {
+        return fetch("http://localhost:5000/bill_items", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(itemsWithBillId),
@@ -133,7 +156,6 @@ function BuyFuel() {
         setItemsData([
           {
             pump_id: "",
-            pump_name: "",
             bill_id: "",
             litres: "",
             price_per_litre: "",
@@ -264,9 +286,9 @@ function BuyFuel() {
                           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-indigo-300 transition duration-150"
                         >
                           <option value="">Select Pump</option>
-                          {availablePumps.map((pump) => (
+                          {pumps.map((pump) => (
                             <option key={pump.id} value={pump.id}>
-                              {pump.name} ({pump.id})
+                              {pump.pump_name} ({pump.id})
                             </option>
                           ))}
                         </select>

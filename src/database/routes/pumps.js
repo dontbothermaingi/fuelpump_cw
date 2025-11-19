@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
-// ========== 1. GET all pumps ==========
+// 1. GET all pumps
 router.get("/", (req, res) => {
   db.query("SELECT * FROM Pump", (err, results) => {
     if (err) return res.status(500).json({ error: err });
@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
   });
 });
 
-// ========== 2. GET a single pump ==========
+// 2. GET a single pump
 router.get("/:id", (req, res) => {
   const { id } = req.params;
 
@@ -25,7 +25,7 @@ router.get("/:id", (req, res) => {
   });
 });
 
-// ========== 3. CREATE pump ==========
+//3. CREATE pump
 router.post("/", (req, res) => {
   const {
     id,
@@ -70,7 +70,7 @@ router.post("/", (req, res) => {
   );
 });
 
-// ========== 4. UPDATE pump ==========
+// 4. UPDATE pump
 router.put("/:id", (req, res) => {
   const { id } = req.params;
   const {
@@ -109,7 +109,7 @@ router.put("/:id", (req, res) => {
   );
 });
 
-// ========== 5. DELETE pump ==========
+//5. DELETE pump
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
 

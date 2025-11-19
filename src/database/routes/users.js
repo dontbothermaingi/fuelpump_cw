@@ -79,7 +79,15 @@ router.post("/login", (req, res) => {
       if (!match)
         return res.status(401).json({ message: "Incorrect password" });
 
-      res.json({ message: "Login successful", user });
+      // Remove password before sending user info
+      const safeUser = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      };
+
+      res.json({ message: "Login successful", user: safeUser });
     }
   );
 });

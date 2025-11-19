@@ -20,7 +20,7 @@ function Login() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/login", {
+      const response = await fetch("http://localhost:5000/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,8 +35,9 @@ function Login() {
       const data = await response.json();
 
       alert("Successfully logged in");
-      // Example: store real token from backend
-      localStorage.setItem("access_token", data.token || "sample_token");
+
+      // Store real token from backend
+      localStorage.setItem("user", JSON.stringify(data.user));
     } catch (err) {
       setError(err.message);
     } finally {

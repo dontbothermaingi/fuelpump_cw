@@ -14,7 +14,13 @@ app.use(
 app.use(express.json());
 const usersRouter = require("./routes/users");
 const pumpsRouter = require("./routes/pumps");
+const billsRouter = require("./routes/bills");
+const billItemsRouter = require("./routes/bill_items");
+const fuelTransactionsRouter = require("./routes/fuel_transactions");
 
+app.use("/fuel_transactions", fuelTransactionsRouter);
+app.use("/bills", billsRouter);
+app.use("/bill_items", billItemsRouter);
 app.use("/pumps", pumpsRouter);
 app.use("/users", usersRouter);
 

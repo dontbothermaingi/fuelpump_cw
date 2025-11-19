@@ -1,87 +1,24 @@
-import { useMemo, useState } from "react";
-
-// --- MOCK DATA ---
-const bills = [
-  {
-    id: 1,
-    user_id: "U345",
-    vendor_name: "Shell",
-    vendor_email: "shellfuels@gmail.com",
-    date: "2023-11-03",
-  },
-  {
-    id: 2,
-    user_id: "U345",
-    vendor_name: "ADNOC",
-    vendor_email: "adnocoil@gmail.com",
-    date: "2023-11-04",
-  },
-  {
-    id: 3,
-    user_id: "A234",
-    vendor_name: "Emirates Fuel",
-    vendor_email: "emirates@fuel.com",
-    date: "2023-11-05",
-  },
-];
-
-const bill_items = [
-  {
-    pump_id: "PMP001",
-    pump_name: "Pump Alpha",
-    bill_id: 1,
-    litres: 1000,
-    price_per_litre: 1.5,
-  },
-  {
-    pump_id: "PMP002",
-    pump_name: "Pump Beta",
-    bill_id: 1,
-    litres: 1200,
-    price_per_litre: 1.2,
-  },
-  {
-    pump_id: "PMP003",
-    pump_name: "Pump Gamma",
-    bill_id: 1,
-    litres: 700,
-    price_per_litre: 0.9,
-  },
-
-  {
-    pump_id: "PMP001",
-    pump_name: "Pump Alpha",
-    bill_id: 2,
-    litres: 500,
-    price_per_litre: 2.0,
-  },
-
-  {
-    pump_id: "PMP004",
-    pump_name: "Pump Delta",
-    bill_id: 3,
-    litres: 1500,
-    price_per_litre: 1.0,
-  },
-  {
-    pump_id: "PMP003",
-    pump_name: "Pump Gamma",
-    bill_id: 3,
-    litres: 300,
-    price_per_litre: 1.1,
-  },
-];
-
-// --- HELPER COMPONENTS ---
+import { useEffect, useMemo, useState } from "react";
 
 // Helper component for the detailed overview pop-up
-const BillDetailDialog = ({ bill, onClose }) => {
+const BillDetailDialog = ({ bill, onClose, billItems }) => {
   if (!bill) return null;
+  const bill_items = billItems.filter((item) => item.bill_id === bill.id);
+
+  const totalLitres = bill_items.reduce(
+    (sum, item) => sum + Number(item.litres),
+    0
+  );
 
   const totalCost = new Intl.NumberFormat("en-AE", {
     style: "currency",
     currency: "AED",
-  }).format(bill.totalCost);
+  }).format(
+    bill_items.reduce(
+      (sum, item) => sum + Number(item.litres) * Number(item.price_per_litre),
+      0
+    )
+  );
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 px-40">
@@ -161,20 +98,22 @@ const BillDetailDialog = ({ bill, onClose }) => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-100">
-                {bill.items.map((item, index) => (
+              <tbody>
+                {(bill_items || []).map((item, index) => (
                   <tr key={index}>
-                    <td className="px-4 py-3 whitespace-nowrap text-md font-medium text-indigo-600">
+                    <td className="px-4 py-3 text-md font-bold text-gray-600 uppercase">
                       {item.pump_name} ({item.pump_id})
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-md text-gray-700">
-                      {item.litres.toFixed(2)}
+                    <td className="px-4 py-3 text-md font-bold text-gray-600 uppercase">
+                      {Number(item.litres).toFixed(2)}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-md text-gray-700">
-                      {item.price_per_litre.toFixed(2)}
+                    <td className="px-4 py-3 text-md font-bold text-gray-600 uppercase">
+                      {Number(item.price_per_litre).toFixed(2)}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-md font-semibold text-right">
-                      {(item.litres * item.price_per_litre).toFixed(2)}
+                    <td className="px-4 py-3 text-md text-right font-bold text-gray-600 uppercase">
+                      {(
+                        Number(item.litres) * Number(item.price_per_litre)
+                      ).toFixed(2)}
                     </td>
                   </tr>
                 ))}
@@ -187,8 +126,7 @@ const BillDetailDialog = ({ bill, onClose }) => {
             <div className="w-full max-w-xs space-y-2 p-3 bg-gray-50 rounded-lg">
               {/* Total Litres */}
               <div className="flex justify-between text-base font-semibold text-gray-800">
-                <span>Total Litres Purchased:</span>
-                <span>{bill.totalLitres.toFixed(2)} L</span>
+                Total Litres Purchased: {totalLitres.toFixed(2)} L
               </div>
 
               {/* Grand Total (Highly Highlighted) */}
@@ -214,50 +152,38 @@ const BillDetailDialog = ({ bill, onClose }) => {
   );
 };
 
-// Main Compont
-
+// Main Compontent
 const ViewBills = () => {
   const [selectedBill, setSelectedBill] = useState(null);
+  const [bills, setBills] = useState([]);
+  const [billItems, setBillItems] = useState([]);
 
-  // 1. Data Merging and Calculation
-  const { processedBills, grandTotalCost, grandTotalLitres } = useMemo(() => {
-    // Group bill items by bill_id
-    const groupedItems = bill_items.reduce((acc, item) => {
-      acc[item.bill_id] = acc[item.bill_id] || [];
-      acc[item.bill_id].push(item);
-      return acc;
-    }, {});
-
-    let grandTotalCost = 0;
-    let grandTotalLitres = 0;
-
-    // Process bills: calculate totals and link items
-    const processedBills = bills.map((bill) => {
-      const items = groupedItems[bill.id] || [];
-
-      const { totalCost, totalLitres } = items.reduce(
-        (acc, item) => {
-          const cost = item.litres * item.price_per_litre;
-          acc.totalCost += cost;
-          acc.totalLitres += item.litres;
-          return acc;
-        },
-        { totalCost: 0, totalLitres: 0 }
-      );
-
-      grandTotalCost += totalCost;
-      grandTotalLitres += totalLitres;
-
-      return {
-        ...bill,
-        totalCost,
-        totalLitres,
-        items,
-      };
-    });
-
-    return { processedBills, grandTotalCost, grandTotalLitres };
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/bills")
+      .then((response) => response.json())
+      .then((data) => {
+        setBills(data);
+      })
+      .catch((error) => console.error("Error fetching pumps:", error));
   }, []);
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/bill_items")
+      .then((response) => response.json())
+      .then((data) => {
+        setBillItems(data);
+        console.log("Fetched bill items:", data);
+      })
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
+  const grandTotalCost = useMemo(() => {
+    return bills
+      .reduce((sum, bill) => sum + Number(bill.total_amount), 0)
+      .toFixed(2);
+  }, [bills]);
 
   // Handler for row click to show details
   const handleViewDetails = (bill) => {
@@ -299,14 +225,14 @@ const ViewBills = () => {
                 <th className="px-6 py-3 text-left">Bill ID</th>
                 <th className="px-6 py-3 text-left">Vendor</th>
                 <th className="px-6 py-3 text-left">Date</th>
-                <th className="px-6 py-3 text-left ">Total Litres</th>
+                {/* <th className="px-6 py-3 text-left ">Total Litres</th> */}
                 <th className="px-6 py-3 text-right ">Total Cost</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-100">
-              {processedBills.map((bill) => (
+              {bills.map((bill, index) => (
                 <tr
-                  key={bill.id}
+                  key={index}
                   onClick={() => handleViewDetails(bill)}
                   className="hover:bg-indigo-50 cursor-pointer transition duration-150"
                 >
@@ -319,11 +245,11 @@ const ViewBills = () => {
                   <td className="px-6 py-4 text-md text-gray-500">
                     {bill.date}
                   </td>
-                  <td className="px-6 py-4 text-md text-gray-700">
-                    {bill.totalLitres.toFixed(2)} L
-                  </td>
+                  {/* <td className="px-6 py-4 text-md text-gray-700">
+                    {bill.litres.toFixed(2)} L
+                  </td> */}
                   <td className="px-6 py-4  text-md font-bold text-right text-green-600">
-                    {formatCurrency(bill.totalCost)}
+                    {formatCurrency(bill.total_amount)}
                   </td>
                 </tr>
               ))}
@@ -331,9 +257,6 @@ const ViewBills = () => {
               <tr className="bg-gray-100 border-t-2 border-indigo-600 font-extrabold text-gray-900">
                 <td colSpan="3" className="px-6 py-4 text-right uppercase">
                   GRAND TOTAL (All Bills)
-                </td>
-                <td className="px-6 py-4 text-left">
-                  {grandTotalLitres.toFixed(2)} L
                 </td>
                 <td className="px-6 py-4 text-right text-lg text-indigo-700">
                   {formatCurrency(grandTotalCost)}
@@ -345,7 +268,11 @@ const ViewBills = () => {
       </div>
 
       {/* Detail Modal */}
-      <BillDetailDialog bill={selectedBill} onClose={handleCloseDialog} />
+      <BillDetailDialog
+        bill={selectedBill}
+        billItems={billItems}
+        onClose={handleCloseDialog}
+      />
     </div>
   );
 };
