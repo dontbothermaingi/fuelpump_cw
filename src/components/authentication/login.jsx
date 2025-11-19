@@ -2,7 +2,6 @@ import { useState } from "react";
 
 function Login() {
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
   });
@@ -21,10 +20,7 @@ function Login() {
     setError("");
 
     try {
-      // Store a temporary token (usually after a real backend response)
-      localStorage.setItem("access_token", "sample_token");
-
-      const response = await fetch("/back-end", {
+      const response = await fetch("http://localhost:5000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,25 +61,6 @@ function Login() {
 
         {/* Form Itself */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex flex-col">
-            <label
-              style={{ fontFamily: "IT Medium" }}
-              className="font-medium mb-1"
-            >
-              Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter your name"
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
-
           <div className="flex flex-col">
             <label
               style={{ fontFamily: "IT Medium" }}

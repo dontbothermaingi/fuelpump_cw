@@ -1,0 +1,59 @@
+CREATE TABLE Users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(100),
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Pump (
+    id VARCHAR(50) PRIMARY KEY,
+    pump_name VARCHAR(255) NOT NULL,
+    pump_reading DECIMAL(10,2) DEFAULT 0,
+    type_of_fuel VARCHAR(100) NOT NULL,
+    litres_capacity DECIMAL(10,2) DEFAULT 0,
+    price_per_litre DECIMAL(10,2) NOT NULL
+);
+
+CREATE TABLE Bill (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    vendor_name VARCHAR(255),
+    vendor_email VARCHAR(255),
+    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    total_amount DECIMAL(10,2) DEFAULT 0,
+
+    FOREIGN KEY (user_id) REFERENCES Users(id)
+        ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+
+CREATE TABLE Bill_Items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    bill_id INT NOT NULL,
+    pump_id VARCHAR(50) NOT NULL,
+    litres DECIMAL(10,2) NOT NULL,
+    price_per_litre DECIMAL(10,2) NOT NULL,
+
+    FOREIGN KEY (bill_id) REFERENCES Bill(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+
+    FOREIGN KEY (pump_id) REFERENCES Pump(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE Fuel_Transaction (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pump_id VARCHAR(50) NOT NULL,
+    user_id INT,
+    vehicle_number VARCHAR(50),
+    litres DECIMAL(10,2) NOT NULL,
+    price_per_liter DECIMAL(10,2) NOT NULL,
+    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (pump_id) REFERENCES Pump(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+
+    FOREIGN KEY (user_id) REFERENCES Users(id)
+        ON DELETE SET NULL ON UPDATE CASCADE
+);
+

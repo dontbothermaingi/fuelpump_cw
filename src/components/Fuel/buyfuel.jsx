@@ -95,15 +95,55 @@ function BuyFuel() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    // Replace alert with custom UI message later
-    console.log("Submitting Invoice:", finalFormData);
-    alert("Invoice submitted successfully! Check console for data.");
+    // 1. Send invoice header first
+    fetch("http://localhost:5000/bills", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+      .then((res) => res.json())
+      .then((billData) => {
+        const billId = billData.id; // assume server returns inserted bill ID
 
-    // fetch("back-end/invoices", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(formData),
-    // });
+        // 2. Prepare items with billId
+        const itemsWithBillId = itemsData.map((item) => ({
+          ...item,
+          bill_id: billId,
+        }));
+
+        // 3. Send bill items
+        return fetch("http://localhost:5000/billitems", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(itemsWithBillId),
+        });
+      })
+      .then((res) => res.json())
+      .then((itemsData) => {
+        alert("Invoice and items submitted successfully!");
+        console.log("Submitted items:", itemsData);
+
+        // Optional: reset form
+        setFormData({
+          user_id: "",
+          vendor_name: "",
+          vendor_email: "",
+          date: "",
+        });
+        setItemsData([
+          {
+            pump_id: "",
+            pump_name: "",
+            bill_id: "",
+            litres: "",
+            price_per_litre: "",
+          },
+        ]);
+      })
+      .catch((err) => {
+        console.error("Error submitting invoice:", err);
+        alert("Submission failed! Check console.");
+      });
   }
 
   return (

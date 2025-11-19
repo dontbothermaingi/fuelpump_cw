@@ -1,15 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import EditPumps from "./editpump";
 import { Dialog } from "@mui/material";
-
-// Mock Data (In a real app, this would be passed as a prop or fetched)
-const PUMP_TO_EDIT = {
-  id: "PMP001",
-  name: "Pump Alpha",
-  pump_reading: 234678,
-  type_of_fuel: "Diesel",
-  litres: 1200,
-};
+import { useParams } from "react-router";
 
 const PUMP_TRANSACTIONS = [
   {
@@ -107,19 +99,28 @@ function TransactionTable({ transactions }) {
 
 function PumpDetailedView() {
   const [open, setOpen] = useState(false);
+  const [pump, setPump] = useState({});
+  const { pumpId } = useParams();
 
   const handleClose = () => {
     setOpen(false);
   };
 
+  useEffect(() => {
+    fetch(`http://localhost:5000/pumps/${pumpId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        // Set pump data to state (not shown here for brevity)
+        console.log("Fetched pump data:", data);
+        setPump(data);
+      })
+      .catch((error) => console.error("Error fetching pump details:", error));
+  }, [pumpId]);
+
   //Data Filtering and Sorting Logic
   const transactions = useMemo(() => {
-    const currentPumpId = PUMP_TO_EDIT.id;
-
     // 1. Filter: Keep only transactions belonging to this pump
-    const filtered = PUMP_TRANSACTIONS.filter(
-      (t) => t.pump_id === currentPumpId
-    );
+    const filtered = PUMP_TRANSACTIONS.filter((t) => t.pump_id === pump.id);
 
     // 2. Sort: Sort by date (latest first). We convert the "YYYY-MM-DD" string to a Date object.
     const sorted = filtered.sort((a, b) => {
@@ -138,7 +139,7 @@ function PumpDetailedView() {
             style={{ fontFamily: "IT Medium" }}
             className="text-3xl  text-gray-800"
           >
-            Pump Details: {PUMP_TO_EDIT.name}
+            Pump Details: {pump.pump_name}
           </h1>
           <button
             onClick={() => setOpen(true)}
@@ -161,14 +162,14 @@ function PumpDetailedView() {
             <DetailItem
               fontType={"IT Medium"}
               label="Pump ID"
-              value={PUMP_TO_EDIT.id}
+              value={pump.id}
             />
             <DetailItem
               label="Fuel Type"
-              value={PUMP_TO_EDIT.type_of_fuel}
+              value={pump.type_of_fuel}
               fontType={"IT Medium"}
               highlight={
-                PUMP_TO_EDIT.type_of_fuel === "Diesel"
+                pump.type_of_fuel === "Diesel"
                   ? "text-blue-600"
                   : "text-orange-600"
               }
@@ -176,12 +177,12 @@ function PumpDetailedView() {
             <DetailItem
               fontType={"IT Medium"}
               label="Capacity (Litres)"
-              value={new Intl.NumberFormat().format(PUMP_TO_EDIT.litres)}
+              value={new Intl.NumberFormat().format(pump.litres_capacity)}
             />
             <DetailItem
               label="Current Reading"
               fontType={"IT Medium"}
-              value={new Intl.NumberFormat().format(PUMP_TO_EDIT.pump_reading)}
+              value={new Intl.NumberFormat().format(pump.pump_reading)}
             />
           </div>
         </div>
@@ -207,7 +208,7 @@ function PumpDetailedView() {
             </button>
           </div>
 
-          <EditPumps />
+          <EditPumps pumpId={pumpId} />
         </Dialog>
       )}
     </div>

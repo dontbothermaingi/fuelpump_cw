@@ -8,7 +8,7 @@ function PumpCard({ pump, onViewDetails }) {
         style={{ fontFamily: "IT Bold" }}
         className="text-xl  text-gray-900 mb-2"
       >
-        {pump.name}
+        {pump.pump_name}
       </h3>
       <p
         style={{ fontFamily: "IT Light" }}
@@ -31,8 +31,7 @@ function PumpCard({ pump, onViewDetails }) {
           </span>
         </p>
         <p style={{ fontFamily: "IT Medium" }} className="text-lg">
-          Current Reading:{" "}
-          {new Intl.NumberFormat().format(pump.current_reading)}
+          Current Reading: {new Intl.NumberFormat().format(pump.pump_reading)}
         </p>
         <p style={{ fontFamily: "IT Medium" }} className="text-lg">
           Capacity: {new Intl.NumberFormat().format(pump.litres_capacity)}{" "}
@@ -43,7 +42,7 @@ function PumpCard({ pump, onViewDetails }) {
           {new Intl.NumberFormat("en-AE", {
             style: "currency",
             currency: "AED",
-          }).format(pump.price_per_liter)}
+          }).format(pump.price_per_litre)}
         </p>
       </div>
 

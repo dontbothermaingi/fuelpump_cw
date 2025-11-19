@@ -1,17 +1,14 @@
 import { useState } from "react";
+import { nanoid } from "nanoid";
 
 function CreatePumps() {
   const [formData, setFormData] = useState({
     pump_name: "",
     pump_reading: "",
     type_of_fuel: "",
-    litres: "",
+    litres_capacity: "",
     price_per_litre: "",
-    // date will be set on submit
   });
-
-  // Note: availablePumps is not used in this creation form, so it can be removed
-  // or reserved for future logic (e.g., checking for duplicate names).
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -29,7 +26,7 @@ function CreatePumps() {
       !formData.pump_name ||
       !formData.pump_reading ||
       !formData.type_of_fuel ||
-      !formData.litres
+      !formData.litres_capacity
     ) {
       alert(
         "Please fill in all required fields (Name, Reading, Fuel Type, Capacity)."
@@ -37,15 +34,14 @@ function CreatePumps() {
       return;
     }
 
-    // Include pump_id generation logic here if the backend doesn't handle it.
-    // Assuming backend generates the ID.
+    console.log("Submitting form data:", formData);
+
     const finalFormData = {
+      id: nanoid(5),
       ...formData,
-      // Add a creation timestamp
-      created_at: new Date().toISOString(),
     };
 
-    fetch("back-end/createpumps", {
+    fetch("http://localhost:5000/pumps", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -60,7 +56,7 @@ function CreatePumps() {
             pump_name: "",
             pump_reading: "",
             type_of_fuel: "",
-            litres: "",
+            litres_capacity: "",
             price_per_litre: "",
           });
         } else {
@@ -108,7 +104,7 @@ function CreatePumps() {
             {/* Pump Reading */}
             <div>
               <label
-                htmlFor="pump_reading" // ⭐️ FIX: Corrected htmlFor to pump_reading
+                htmlFor="pump_reading"
                 className="block text-sm font-semibold text-gray-700 mb-1"
               >
                 Initial Pump Reading
@@ -139,9 +135,9 @@ function CreatePumps() {
               <input
                 type="number"
                 id="litres"
-                value={formData.litres}
+                value={formData.litres_capacity}
                 onChange={handleChange}
-                name="litres"
+                name="litres_capacity"
                 placeholder="e.g., 1200"
                 step="0.01"
                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"

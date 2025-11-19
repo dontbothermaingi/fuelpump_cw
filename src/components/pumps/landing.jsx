@@ -1,42 +1,11 @@
-import { useState } from "react";
-// Assuming CreatePumps component is imported
+import { useEffect, useState } from "react";
 import PumpCard from "./pumpcard";
 import CreatePumps from "./createpumps";
 import { Dialog } from "@mui/material";
 import { useNavigate } from "react-router";
-// Assuming you'll create a PumpCard component (see section 3)
-// import PumpCard from './PumpCard';
-
-// Mock Data (Replace with your actual fetch call later)
-const MOCK_PUMPS = [
-  {
-    id: "PMP001",
-    name: "Pump Alpha (Diesel)",
-    type_of_fuel: "Diesel",
-    current_reading: 234678,
-    litres_capacity: 1200,
-    price_per_liter: 2.58,
-  },
-  {
-    id: "PMP002",
-    name: "Pump Beta (Petrol)",
-    type_of_fuel: "Petrol",
-    current_reading: 987654,
-    litres_capacity: 1500,
-    price_per_liter: 2.02,
-  },
-  {
-    id: "PMP003",
-    name: "Pump Gamma (Diesel)",
-    type_of_fuel: "Diesel",
-    current_reading: 50000,
-    litres_capacity: 800,
-    price_per_liter: 1.76,
-  },
-];
 
 function LandingPumpPage() {
-  const [pumps, setPumps] = useState(MOCK_PUMPS);
+  const [pumps, setPumps] = useState([]);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -44,6 +13,14 @@ function LandingPumpPage() {
   const handleViewDetails = (pumpId) => {
     navigate(`/pump_details/${pumpId}`);
   };
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/pumps")
+      .then((response) => response.json())
+      .then((data) => setPumps(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
 
   const handleClose = () => {
     setOpen(false);
