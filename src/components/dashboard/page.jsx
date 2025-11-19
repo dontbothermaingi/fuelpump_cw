@@ -70,6 +70,8 @@ function Dashboard() {
 
   const editDate = useCallback((dateString) => {
     const options = { year: "numeric", month: "short", day: "numeric" };
+    //Format the date according to the options above. `toLocaleDateString` handles formatting for us.
+    // `toLocaleDateString` takes two arguments: a locale (undefined uses the user's locale) and options for formatting.
     return new Date(dateString).toLocaleDateString(undefined, options);
   }, []);
 

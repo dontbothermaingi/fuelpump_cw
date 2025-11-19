@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 function FuelVehicles() {
   const [pumps, setPumps] = useState([]);
@@ -51,7 +51,7 @@ function FuelVehicles() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    // Basic Validation Check (UX Improvement)
+    // check required fields
     if (!formData.pump_id || !formData.litres || !formData.vehicle_number) {
       alert(
         "Please fill in all required fields (Pump, Litres, Vehicle Number)."
@@ -61,10 +61,10 @@ function FuelVehicles() {
 
     const finalFormData = {
       ...formData,
-      user_id: user_id, // Attach user_id from localStorage
+      user_id: user_id, // put user_id from localStorage
     };
 
-    console.log("Submitting form data:", finalFormData);
+    // console.log("Submitting form data:", finalFormData);
 
     fetch("http://localhost:5000/fuel_transactions", {
       method: "POST",
@@ -75,7 +75,7 @@ function FuelVehicles() {
     })
       .then((response) => {
         if (response.ok) {
-          alert("Fuel transaction submitted successfully!"); // Success feedback
+          alert("Fuel transaction submitted successfully!");
           // Reset form for next entry
           setFormData({
             pump_id: "",
@@ -105,7 +105,7 @@ function FuelVehicles() {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Group 1: Pump and Vehicle */}
+          {/* Fist part*/}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
@@ -187,16 +187,6 @@ function FuelVehicles() {
           >
             Submit Fuel Transaction
           </button>
-
-          {/* Display selected pump name (Optional UX feedback) */}
-          {formData.pump_name && (
-            <p
-              style={{ fontFamily: "IT Light" }}
-              className="text-sm text-gray-500 mt-4 text-center"
-            >
-              You are recording fuel for {formData.pump_name}.
-            </p>
-          )}
         </form>
       </div>
     </div>

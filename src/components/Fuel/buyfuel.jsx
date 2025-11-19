@@ -131,8 +131,8 @@ function BuyFuel() {
           bill_id: billId,
         }));
 
-        console.log("Bill created with ID:", finalFormData);
-        console.log("Prepared items with bill ID:", itemsWithBillId);
+        // console.log("Bill created with ID:", finalFormData);
+        // console.log("Prepared items with bill ID:", itemsWithBillId);
 
         // 3. Send bill items
         return fetch("http://localhost:5000/bill_items", {
@@ -144,7 +144,7 @@ function BuyFuel() {
       .then((res) => res.json())
       .then((itemsData) => {
         alert("Invoice and items submitted successfully!");
-        console.log("Submitted items:", itemsData);
+        // console.log("Submitted items:", itemsData);
 
         // Optional: reset form
         setFormData({
@@ -182,7 +182,7 @@ function BuyFuel() {
         <ViewBills />
       ) : (
         <div className="w-full mx-auto my-8 p-10">
-          {/* INVOICE HEADER BLOCK (For a professional look) */}
+          {/* The headr part*/}
           <div className="flex justify-between items-center border-b-4 border-indigo-600 pb-4 mb-8">
             <h1
               style={{ fontFamily: "IT Bold" }}
@@ -207,7 +207,7 @@ function BuyFuel() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* SECTION 1: INVOICE HEADER DETAILS (Vendor Info) */}
+            {/* Vendor Info*/}
             <div>
               <h2
                 style={{ fontFamily: "IT Medium" }}
@@ -253,7 +253,7 @@ function BuyFuel() {
               </div>
             </div>
 
-            {/* SECTION 2: BILL ITEMS (Dynamic) */}
+            {/* Items of the bills*/}
             <div>
               <h2
                 style={{ fontFamily: "IT Bold" }}
@@ -354,7 +354,7 @@ function BuyFuel() {
               </button>
             </div>
 
-            {/* SECTION 3: SUMMARY & SUBMISSION (Bottom Footer) */}
+            {/* summary*/}
             <div className="flex flex-col lg:flex-row lg:justify-between gap-5 lg:items-center p-6 mt-8 border-t-4 border-gray-300">
               <h3
                 style={{ fontFamily: "IT Bold" }}

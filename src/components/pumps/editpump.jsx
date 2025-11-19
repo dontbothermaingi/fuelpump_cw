@@ -14,7 +14,7 @@ function EditPumps({ pumpId }) {
     fetch(`http://localhost:5000/pumps/${pumpId}`)
       .then((response) => response.json())
       .then((data) => {
-        // Set pump data to state (not shown here for brevity)
+        // Put fetched info into formData state
         console.log("Fetched pump data:", data);
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -52,7 +52,6 @@ function EditPumps({ pumpId }) {
       return;
     }
 
-    // ⭐️ FIX: Use formData.id (which was set in useEffect) for the URL
     fetch(`http://localhost:5000/pumps/${pumpId}`, {
       method: "PUT",
       headers: {
@@ -79,7 +78,6 @@ function EditPumps({ pumpId }) {
     <div className="flex justify-center">
       <div className="w-full p-4">
         {" "}
-        {/* Added max-w-lg and padding for better UI */}
         <h2 className="text-3xl text-gray-800 mb-6 border-b pb-2">EDIT PUMP</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Group 1: Pump and Pump Reading */}
@@ -111,11 +109,11 @@ function EditPumps({ pumpId }) {
                 Pump Reading
               </label>
               <input
-                type="number" // Changed to number for reading
+                type="number"
                 id="pump_reading"
                 value={formData.pump_reading}
                 onChange={handleChange}
-                name="pump_reading" // Correct name
+                name="pump_reading"
                 placeholder="e.g., 234678"
                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />

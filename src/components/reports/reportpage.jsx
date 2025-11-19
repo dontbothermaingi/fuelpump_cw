@@ -1,42 +1,5 @@
 import { use, useEffect, useMemo, useState } from "react";
 
-// --- UTILITY COMPONENTS ---
-
-// Helper component for displaying main statistics
-const StatCard = ({
-  title,
-  value,
-  unit,
-  isMoney = true,
-  color = "text-gray-900",
-}) => {
-  const formattedValue = isMoney
-    ? new Intl.NumberFormat("en-AE", {
-        style: "currency",
-        currency: "AED",
-      }).format(value)
-    : new Intl.NumberFormat().format(value);
-
-  return (
-    <div className="bg-white p-6 rounded-xl shadow-lg border-b-4 border-indigo-400">
-      <p
-        style={{ fontFamily: "IT Medium" }}
-        className="text-sm text-gray-500 uppercase"
-      >
-        {title}
-      </p>
-      <p
-        style={{ fontFamily: "IT Medium" }}
-        className={`mt-1 text-3xl ${color}`}
-      >
-        {formattedValue} {unit}
-      </p>
-    </div>
-  );
-};
-
-// --- MAIN REPORT COMPONENT ---
-
 function ReportPage() {
   const [pumps, setPumps] = useState([]);
   const [users, setUsers] = useState([]);
@@ -84,7 +47,6 @@ function ReportPage() {
       .catch((error) => console.error("Error fetching pumps:", error));
   }, []);
 
-  // 1. FINANCIAL CALCULATIONS (Purchases, Sales, Profit)
   const financialSummary = useMemo(() => {
     const totalCost = billItems.reduce(
       (sum, item) => sum + Number(item.litres) * Number(item.price_per_litre),
@@ -416,5 +378,38 @@ function ReportPage() {
     </div>
   );
 }
+
+// Helper component for displaying main statistics
+const StatCard = ({
+  title,
+  value,
+  unit,
+  isMoney = true,
+  color = "text-gray-900",
+}) => {
+  const formattedValue = isMoney
+    ? new Intl.NumberFormat("en-AE", {
+        style: "currency",
+        currency: "AED",
+      }).format(value)
+    : new Intl.NumberFormat().format(value);
+
+  return (
+    <div className="bg-white p-6 rounded-xl shadow-lg border-b-4 border-indigo-400">
+      <p
+        style={{ fontFamily: "IT Medium" }}
+        className="text-sm text-gray-500 uppercase"
+      >
+        {title}
+      </p>
+      <p
+        style={{ fontFamily: "IT Medium" }}
+        className={`mt-1 text-3xl ${color}`}
+      >
+        {formattedValue} {unit}
+      </p>
+    </div>
+  );
+};
 
 export default ReportPage;

@@ -3,7 +3,7 @@ import React from "react";
 function Card({
   title,
   description,
-  children, // for custom action buttons or extra content
+  children,
   className = "", // allows additional styling
 }) {
   return (

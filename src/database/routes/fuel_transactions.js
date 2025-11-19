@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
-// 1️⃣ Get all fuel transactions
+//Get all fuel transactions
 router.get("/", (req, res) => {
   db.query("SELECT * FROM Fuel_Transaction", (err, results) => {
     if (err) return res.status(500).send(err);
@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
   });
 });
 
-// 2️⃣ Get a single transaction by ID
+//Get a single transaction by ID
 router.get("/:id", (req, res) => {
   const { id } = req.params;
   db.query(
@@ -25,7 +25,7 @@ router.get("/:id", (req, res) => {
   );
 });
 
-// 3️⃣ Create a new transaction (and update pump stock)
+//Create a new transaction (and update pump stock)
 router.post("/", (req, res) => {
   const { pump_id, user_id, vehicle_number, litres, price_per_liter } =
     req.body;
@@ -65,7 +65,7 @@ router.post("/", (req, res) => {
   );
 });
 
-// 4️⃣ Update a transaction
+//Update a transaction
 router.put("/:id", (req, res) => {
   const { id } = req.params;
   const { pump_id, user_id, vehicle_number, litres, price_per_liter } =
@@ -87,7 +87,7 @@ router.put("/:id", (req, res) => {
   );
 });
 
-// 5️⃣ Delete a transaction
+//Delete a transaction
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
 

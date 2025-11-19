@@ -2,7 +2,7 @@ function PumpCard({ pump, onViewDetails }) {
   return (
     <div
       className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 cursor-pointer border-l-4 border-indigo-500"
-      onClick={() => onViewDetails(pump.id)} // Clickable to view details
+      onClick={() => onViewDetails(pump.id)}
     >
       <h3
         style={{ fontFamily: "IT Bold" }}

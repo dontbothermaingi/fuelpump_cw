@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
   });
 });
 
-// 2. GET a single pump
+// 2.GET a single pump
 router.get("/:id", (req, res) => {
   const { id } = req.params;
 
@@ -25,7 +25,7 @@ router.get("/:id", (req, res) => {
   });
 });
 
-//3. CREATE pump
+//3.CREATE pump
 router.post("/", (req, res) => {
   const {
     id,

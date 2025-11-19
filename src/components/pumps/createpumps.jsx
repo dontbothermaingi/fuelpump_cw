@@ -60,7 +60,6 @@ function CreatePumps() {
             price_per_litre: "",
           });
         } else {
-          // Attempt to read server error message if available
           return response.json().then((err) => {
             throw new Error(err.message || "Submission failed.");
           });
@@ -76,7 +75,6 @@ function CreatePumps() {
     <div className="flex justify-center">
       <div className="w-full p-5 bg-white">
         {" "}
-        {/* Added max-w-lg and padding */}
         <h2 className="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">
           CREATE NEW PUMP
         </h2>
@@ -110,7 +108,7 @@ function CreatePumps() {
                 Initial Pump Reading
               </label>
               <input
-                type="number" // ⭐️ Improvement: Changed type to number
+                type="number"
                 id="pump_reading"
                 value={formData.pump_reading}
                 onChange={handleChange}
@@ -167,7 +165,7 @@ function CreatePumps() {
             {/* Fuel Type Input */}
             <div>
               <label
-                htmlFor="type_of_fuel" // ⭐️ FIX: Corrected htmlFor to type_of_fuel
+                htmlFor="type_of_fuel"
                 className="block text-sm font-semibold text-gray-700 mb-1"
               >
                 Fuel Type
@@ -177,7 +175,7 @@ function CreatePumps() {
                 value={formData.type_of_fuel}
                 id="type_of_fuel"
                 onChange={handleChange}
-                name="type_of_fuel" // ⭐️ CRITICAL FIX: Corrected name attribute
+                name="type_of_fuel"
                 placeholder="e.g., Diesel, Petrol"
                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />

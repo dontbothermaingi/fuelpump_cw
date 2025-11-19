@@ -95,14 +95,11 @@ router.post("/login", (req, res) => {
 // 5. Update a user
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { name, role, password } = req.body;
-
-  // Re-hash password if updated
-  const hashed = password ? await bcrypt.hash(password, 10) : null;
+  const { name, role, email } = req.body;
 
   db.query(
-    "UPDATE Users SET name = ?, role = ?, password = ? WHERE id = ?",
-    [name, role, hashed, id],
+    "UPDATE Users SET name = ?, role = ?, email = ? WHERE id = ?",
+    [name, role, email, id],
     (err) => {
       if (err) return res.status(500).send(err);
       res.json({ message: "User updated" });

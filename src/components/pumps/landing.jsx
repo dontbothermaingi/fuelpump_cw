@@ -9,7 +9,7 @@ function LandingPumpPage() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Function to handle navigation (replace with actual routing like react-router-dom)
+  // Function to handle navigation
   const handleViewDetails = (pumpId) => {
     navigate(`/pump_details/${pumpId}`);
   };
@@ -20,7 +20,6 @@ function LandingPumpPage() {
   const role = user?.role; // "admin" or "staff"
 
   useEffect(() => {
-    // Fetch pumps data from the backend API
     fetch("http://localhost:5000/pumps")
       .then((response) => response.json())
       .then((data) => setPumps(data))
@@ -33,7 +32,6 @@ function LandingPumpPage() {
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
-      {/* HEADER AND CTA BUTTON */}
       <header className="flex justify-between items-center mb-8 pb-4 border-b">
         <h1
           style={{ fontFamily: "IT Medium" }}
@@ -52,7 +50,6 @@ function LandingPumpPage() {
         </button>
       </header>
 
-      {/* PUMP LIST (CARD GRID) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {pumps.map((pump) => (
           <PumpCard
@@ -63,7 +60,6 @@ function LandingPumpPage() {
         ))}
       </div>
 
-      {/* DIALOG POPUP */}
       {open && (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
           <div className="flex justify-end p-3">
