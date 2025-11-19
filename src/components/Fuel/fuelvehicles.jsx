@@ -1,36 +1,39 @@
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 
 function FuelVehicles() {
+  const [pumps, setPumps] = useState([]);
   const [formData, setFormData] = useState({
-    pump_name: "",
-    user_id: "",
     pump_id: "",
+    user_id: "",
+    vehicle_number: "",
     litres: "",
-    vehcile_number: "",
     price_per_liter: "",
-    date: "",
   });
 
-  const availablePumps = [
-    { id: "PMP001", name: "Pump Alpha" },
-    { id: "PMP002", name: "Pump Beta" },
-    // Add a couple more for better testing
-    { id: "PMP003", name: "Pump Gamma" },
-    { id: "PMP004", name: "Pump Delta" },
-  ];
+  // Retrieve user info from localStorage
+  const userString = localStorage.getItem("user"); // string from localStorage
+  const user = userString ? JSON.parse(userString) : null; // convert to object
+  const user_id = user?.id; // optional chaining in case user is null
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/pumps")
+      .then((response) => response.json())
+      .then((data) => setPumps(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
 
   function handleChange(e) {
     const { name, value } = e.target;
 
     if (name === "pump_id") {
-      const selectedPump = availablePumps.find((p) => p.id === value);
+      const selectedPump = pumps.find((p) => p.id == value);
 
       // Update both pump_id (the value from the select) and pump_name
       setFormData((prevFormdata) => ({
         ...prevFormdata,
         pump_id: value, // Use 'value' here
-        pump_name: selectedPump ? selectedPump.name : "",
-        price_per_liter: selectedPump ? selectedPump.price_per_liter : 1,
+        price_per_liter: selectedPump ? selectedPump.price_per_litre : 1,
       }));
     } else {
       setFormData((prevFormdata) => ({
@@ -44,31 +47,37 @@ function FuelVehicles() {
     e.preventDefault();
 
     // Basic Validation Check (UX Improvement)
-    if (!formData.pump_id || !formData.litres || !formData.vehcile_number) {
+    if (!formData.pump_id || !formData.litres || !formData.vehicle_number) {
       alert(
         "Please fill in all required fields (Pump, Litres, Vehicle Number)."
       );
       return; // Stop submission if validation fails
     }
 
-    fetch("back-end/fueltransaction", {
+    const finalFormData = {
+      ...formData,
+      user_id: user_id, // Attach user_id from localStorage
+    };
+
+    console.log("Submitting form data:", finalFormData);
+
+    fetch("http://localhost:5000/fuel_transactions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(finalFormData),
     })
       .then((response) => {
         if (response.ok) {
           alert("Fuel transaction submitted successfully!"); // Success feedback
           // Reset form for next entry
           setFormData({
-            pump_name: "",
-            user_id: "",
             pump_id: "",
+            user_id: "",
+            vehicle_number: "",
             litres: "",
-            vehcile_number: "",
-            date: "",
+            price_per_liter: "",
           });
         } else {
           alert("Submission failed. Please check the network."); // Error feedback
@@ -112,9 +121,9 @@ function FuelVehicles() {
                 <option value="" disabled>
                   Select Pump
                 </option>
-                {availablePumps.map((pump) => (
+                {pumps.map((pump) => (
                   <option key={pump.id} value={pump.id}>
-                    {pump.name}
+                    {pump.pump_name}
                   </option>
                 ))}
               </select>
@@ -131,10 +140,10 @@ function FuelVehicles() {
               </label>
               <input
                 type="text"
-                id="vehcile_number"
-                value={formData.vehcile_number}
+                id="vehicle_number"
+                value={formData.vehicle_number}
                 onChange={handleChange}
-                name="vehcile_number"
+                name="vehicle_number"
                 placeholder="e.g., ABC 1234"
                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -160,25 +169,6 @@ function FuelVehicles() {
                 name="litres"
                 placeholder="e.g., 50.00"
                 step="0.01"
-                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Date Input */}
-            <div>
-              <label
-                htmlFor="date"
-                className="block text-sm  text-gray-700 mb-1"
-                style={{ fontFamily: "IT Regular" }}
-              >
-                Date
-              </label>
-              <input
-                type="date"
-                value={formData.date}
-                id="date"
-                onChange={handleChange}
-                name="date"
                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>

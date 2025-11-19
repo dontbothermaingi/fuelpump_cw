@@ -50,7 +50,7 @@ router.post("/", (req, res) => {
       // Update pump stock: subtract sold litres
       const sqlUpdatePump = `
         UPDATE Pump
-        SET litres_available = litres_available - ?
+        SET litres_capacity = litres_capacity - ?
         WHERE id = ?
       `;
 
