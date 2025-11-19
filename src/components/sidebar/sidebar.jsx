@@ -5,6 +5,12 @@ function SideBar() {
   const [activeItem, setActiveItem] = useState("Dashboard");
   const navigate = useNavigate();
 
+  // Retrieve user info from localStorage
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;
+  const role = user?.role; // "admin" or "staff"
+
+  // Full menu (Admin)
   const menuItems = [
     { name: "Dashboard", rt: "/" },
     { name: "Buy Fuel", rt: "/buy-fuel" },
@@ -13,7 +19,20 @@ function SideBar() {
     { name: "View Report", rt: "/report" },
   ];
 
-  function barItem(item, onClick) {
+  // Filter menu based on role
+  const filteredMenu =
+    role == "Staff"
+      ? menuItems.filter((item) =>
+          ["Dashboard", "Fuel Vehicles", "Pumps"].includes(item.name)
+        )
+      : menuItems; // Admin sees everything
+
+  function handleLogout() {
+    localStorage.removeItem("user");
+    navigate("/login");
+  }
+
+  function barItem(item) {
     const isActive = item === activeItem;
 
     return (
@@ -46,10 +65,37 @@ function SideBar() {
         </div>
 
         {/* Menu */}
-        <div className="flex flex-col mt-6 px-3">
-          {menuItems.map((item, i) => (
-            <div onClick={() => navigate(item.rt)}>{barItem(item.name)}</div>
-          ))}
+        <div className="h-full flex flex-col justify-between mt-4">
+          <div className="flex flex-col mt-6 px-3">
+            {filteredMenu.map((item) => (
+              <div key={item.name} onClick={() => navigate(item.rt)}>
+                {barItem(item.name)}
+              </div>
+            ))}
+          </div>
+
+          {/* Login / Logout Buttons */}
+          <div className="px-3 mb-4">
+            {user ? (
+              <div
+                onClick={handleLogout}
+                className="flex items-center px-4 py-2 rounded-lg cursor-pointer bg-red-500 text-white hover:bg-red-600 transition-all duration-300"
+              >
+                <p style={{ fontFamily: "IT Regular" }} className="ml-2">
+                  Logout
+                </p>
+              </div>
+            ) : (
+              <div
+                onClick={() => navigate("/login")}
+                className="flex items-center px-4 py-2 rounded-lg cursor-pointer bg-green-600 text-white hover:bg-green-700 transition-all duration-300"
+              >
+                <p style={{ fontFamily: "IT Regular" }} className="ml-2">
+                  Login
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

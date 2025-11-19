@@ -181,9 +181,12 @@ function Register() {
             disabled={loading}
             className="mt-4 bg-blue-500 text-white font-medium py-2 rounded-md hover:bg-blue-600 transition duration-200 disabled:bg-blue-300"
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
+        <p className="pt-5 cursor-pointer" onClick={() => nav("/login")}>
+          Already Registered? <span className="text-blue-500">Login</span>
+        </p>
       </div>
     </div>
   );

@@ -29,6 +29,11 @@ function FuelVehicles() {
     if (name === "pump_id") {
       const selectedPump = pumps.find((p) => p.id == value);
 
+      if (selectedPump.litres_capacity <= 0) {
+        alert("Selected pump is out of fuel. Please choose another pump.");
+        return;
+      }
+
       // Update both pump_id (the value from the select) and pump_name
       setFormData((prevFormdata) => ({
         ...prevFormdata,

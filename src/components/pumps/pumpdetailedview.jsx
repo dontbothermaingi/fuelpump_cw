@@ -14,6 +14,11 @@ function PumpDetailedView() {
     setOpen(false);
   };
 
+  // Retrieve user info from localStorage
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;
+  const role = user?.role; // "admin" or "staff"
+
   useEffect(() => {
     fetch(`http://localhost:5000/pumps/${pumpId}`)
       .then((response) => response.json())
@@ -80,7 +85,9 @@ function PumpDetailedView() {
           </h1>
           <button
             onClick={() => setOpen(true)}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition duration-150"
+            className={`px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 cursor-pointer ${
+              role !== "Admin" ? "hidden" : ""
+            }`}
             style={{ fontFamily: "IT Medium" }}
           >
             Edit Pump
@@ -115,11 +122,6 @@ function PumpDetailedView() {
               fontType={"IT Medium"}
               label="Capacity (Litres)"
               value={new Intl.NumberFormat().format(pump.litres_capacity)}
-            />
-            <DetailItem
-              label="Current Reading"
-              fontType={"IT Medium"}
-              value={new Intl.NumberFormat().format(pump.pump_reading)}
             />
           </div>
         </div>

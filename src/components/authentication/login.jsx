@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -8,6 +9,7 @@ function Login() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -33,7 +35,7 @@ function Login() {
       }
 
       const data = await response.json();
-
+      navigate("/");
       alert("Successfully logged in");
 
       // Store real token from backend
@@ -108,6 +110,13 @@ function Login() {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        <p
+          className="pt-5 cursor-pointer"
+          onClick={() => navigate("/register")}
+        >
+          Not Registered? <span className="text-blue-500">Register</span>
+        </p>
       </div>
     </div>
   );

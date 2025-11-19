@@ -31,9 +31,6 @@ function PumpCard({ pump, onViewDetails }) {
           </span>
         </p>
         <p style={{ fontFamily: "IT Medium" }} className="text-lg">
-          Current Reading: {new Intl.NumberFormat().format(pump.pump_reading)}
-        </p>
-        <p style={{ fontFamily: "IT Medium" }} className="text-lg">
           Capacity: {new Intl.NumberFormat().format(pump.litres_capacity)}{" "}
           Litres
         </p>
