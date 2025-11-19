@@ -1,153 +1,6 @@
-import { useMemo } from "react";
-
-// --- MOCK DATA ---
-const MOCK_PUMPS = [
-  {
-    id: "PMP001",
-    name: "Pump Alpha (Diesel)",
-    type_of_fuel: "Diesel",
-    current_reading: 234678,
-    litres_capacity: 1200,
-    price_per_liter: 2.58,
-  },
-  {
-    id: "PMP002",
-    name: "Pump Beta (Petrol)",
-    type_of_fuel: "Petrol",
-    current_reading: 987654,
-    litres_capacity: 1500,
-    price_per_liter: 2.02,
-  },
-  {
-    id: "PMP003",
-    name: "Pump Gamma (Diesel)",
-    type_of_fuel: "Diesel",
-    current_reading: 50000,
-    litres_capacity: 800,
-    price_per_liter: 1.76,
-  },
-];
-
-const PUMP_TRANSACTIONS = [
-  // PMP001 (Price: 2.58)
-  {
-    id: 5,
-    user_id: "U345",
-    pump_id: "PMP001",
-    litres: "200",
-    vehcile_number: "1234T",
-    date: "2024-11-15",
-    price_per_litre: 2.58,
-  },
-  {
-    id: 4,
-    user_id: "U101",
-    pump_id: "PMP001",
-    litres: "150",
-    vehcile_number: "5678U",
-    date: "2024-11-14",
-    price_per_litre: 2.58,
-  },
-  {
-    id: 3,
-    user_id: "U789",
-    pump_id: "PMP001",
-    litres: "300",
-    vehcile_number: "9012V",
-    date: "2024-11-13",
-    price_per_litre: 2.58,
-  },
-  {
-    id: 1,
-    user_id: "U345",
-    pump_id: "PMP001",
-    litres: "50",
-    vehcile_number: "2222Y",
-    date: "2024-11-11",
-    price_per_litre: 2.58,
-  },
-
-  // PMP002 (Price: 2.02)
-  {
-    id: 6,
-    user_id: "A234",
-    pump_id: "PMP002",
-    litres: "100",
-    vehcile_number: "Z999",
-    date: "2024-11-10",
-    price_per_litre: 2.02,
-  },
-
-  // PMP003 (Price: 1.76)
-  {
-    id: 7,
-    user_id: "F651",
-    pump_id: "PMP003",
-    litres: "75",
-    vehcile_number: "Q111",
-    date: "2024-11-09",
-    price_per_litre: 1.76,
-  },
-
-  {
-    id: 2,
-    user_id: "U222",
-    pump_id: "PMP003",
-    litres: "200",
-    vehcile_number: "1111X",
-    date: "2024-11-12",
-    price_per_litre: 1.76,
-  },
-];
-
-const staff = [
-  { name: "Pep Guardiola", user_id: "U345", role: "Admin" },
-  { name: "Bryan Mbeumo", user_id: "A234", role: "Staff" },
-  { name: "Ruben Amorim", user_id: "F651", role: "Staff" },
-  { name: "Erling Haaland", user_id: "B444", role: "Staff" },
-  { name: "Cole Palmer", user_id: "U222", role: "Staff" },
-  { name: "Jeremy Doku", user_id: "U789", role: "Staff" },
-  { name: "Romelu Lukaku", user_id: "U101", role: "Staff" },
-];
-
-const bills = [
-  {
-    id: 1,
-    user_id: "U345",
-    vendor_name: "Shell",
-    vendor_email: "shellfuels@gmail.com",
-    date: "11/03/2023",
-  },
-];
-
-const bill_items = [
-  {
-    pump_id: "PMP001",
-    pump_name: "Pump Alpha",
-    bill_id: 1,
-    litres: 1000,
-    price_per_litre: 1.5,
-  },
-  {
-    pump_id: "PMP002",
-    pump_name: "Pump Beta",
-    bill_id: 1,
-    litres: 1200,
-    price_per_litre: 1.2,
-  },
-  {
-    pump_id: "PMP003",
-    pump_name: "Pump Gamma",
-    bill_id: 1,
-    litres: 700,
-    price_per_litre: 0.9,
-  },
-];
+import { use, useEffect, useMemo, useState } from "react";
 
 // --- UTILITY COMPONENTS ---
-
-// Helper function to find pump data
-const findPump = (id) => MOCK_PUMPS.find((p) => p.id === id);
 
 // Helper component for displaying main statistics
 const StatCard = ({
@@ -185,106 +38,122 @@ const StatCard = ({
 // --- MAIN REPORT COMPONENT ---
 
 function ReportPage() {
+  const [pumps, setPumps] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [fuelTransactions, setFuelTransactions] = useState([]);
+  const [bills, setBills] = useState([]);
+  const [billItems, setBillItems] = useState([]);
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/pumps")
+      .then((response) => response.json())
+      .then((data) => setPumps(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/users")
+      .then((response) => response.json())
+      .then((data) => setUsers(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/fuel_transactions")
+      .then((response) => response.json())
+      .then((data) => setFuelTransactions(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/bills")
+      .then((response) => response.json())
+      .then((data) => setBills(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/bill_items")
+      .then((response) => response.json())
+      .then((data) => setBillItems(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
   // 1. FINANCIAL CALCULATIONS (Purchases, Sales, Profit)
   const financialSummary = useMemo(() => {
-    // Total Cost (Purchases)
-    const totalCost = bill_items.reduce((sum, item) => {
-      return sum + item.litres * item.price_per_litre;
+    const totalCost = billItems.reduce(
+      (sum, item) => sum + Number(item.litres) * Number(item.price_per_litre),
+      0
+    );
+
+    const totalRevenue = fuelTransactions.reduce((sum, transaction) => {
+      const litres = Number(transaction.litres) || 0;
+      const price = Number(transaction.price_per_liter) || 0;
+      return sum + litres * price;
     }, 0);
 
-    // Total Sales (Revenue)
-    const totalRevenue = PUMP_TRANSACTIONS.reduce((sum, transaction) => {
-      const pump = findPump(transaction.pump_id);
-      const litres = parseFloat(transaction.litres) || 0;
-
-      if (!pump) return sum; // Skip transactions for invalid pumps
-
-      return sum + litres * pump.price_per_liter;
-    }, 0);
-
-    const grossProfit = totalRevenue - totalCost;
-
-    return { totalCost, totalRevenue, grossProfit };
-  }, []);
+    return { totalCost, totalRevenue, grossProfit: totalRevenue - totalCost };
+  }, [billItems, fuelTransactions, pumps]);
 
   // 2. PUMP PERFORMANCE
   const pumpPerformance = useMemo(() => {
-    const pumpDataMap = {};
+    return pumps
+      .map((pump) => {
+        const transactions = fuelTransactions.filter(
+          (t) => t.pump_id === pump.id
+        );
+        const items = billItems.filter((item) => item.pump_id === pump.id);
 
-    // Calculate Revenue and Litres Sold for each pump
-    PUMP_TRANSACTIONS.forEach((t) => {
-      const pumpId = t.pump_id;
-      const pumpDetails = findPump(pumpId);
-      if (!pumpDetails) return;
+        const totalRevenue = transactions.reduce(
+          (sum, t) => sum + Number(t.litres) * Number(pump.price_per_litre),
+          0
+        );
 
-      const litres = parseFloat(t.litres) || 0;
-      const revenue = litres * pumpDetails.price_per_liter;
+        const totalCost = items.reduce(
+          (sum, i) => sum + Number(i.litres) * Number(i.price_per_litre),
+          0
+        );
 
-      pumpDataMap[pumpId] = pumpDataMap[pumpId] || {
-        id: pumpId,
-        name: pumpDetails.name,
-        totalRevenue: 0,
-        totalLitresSold: 0,
-        totalCost: 0,
-      };
-
-      pumpDataMap[pumpId].totalRevenue += revenue;
-      pumpDataMap[pumpId].totalLitresSold += litres;
-    });
-
-    // Add Total Cost for each pump from Bill Items (COGS)
-    bill_items.forEach((item) => {
-      if (pumpDataMap[item.pump_id]) {
-        pumpDataMap[item.pump_id].totalCost +=
-          item.litres * item.price_per_litre;
-      }
-    });
-
-    const results = Object.values(pumpDataMap)
-      .map((pump) => ({
-        ...pump,
-        grossProfit: pump.totalRevenue - pump.totalCost,
-      }))
-      .sort((a, b) => b.grossProfit - a.grossProfit); // Sort by highest profit
-
-    return results;
-  }, []);
+        return {
+          id: pump.id,
+          name: pump.pump_name,
+          totalRevenue,
+          totalCost,
+          totalLitresSold: transactions.reduce(
+            (sum, t) => sum + Number(t.litres),
+            0
+          ),
+          grossProfit: totalRevenue - totalCost,
+        };
+      })
+      .sort((a, b) => b.grossProfit - a.grossProfit);
+  }, [pumps, fuelTransactions, billItems]);
 
   const mostProfitablePump =
     pumpPerformance.length > 0 ? pumpPerformance[0] : null;
 
   // 3. STAFF PERFORMANCE
   const staffPerformance = useMemo(() => {
-    const staffSalesMap = {};
+    return users
+      .map((user) => {
+        const sales = fuelTransactions
+          .filter((t) => t.user_id === user.id)
+          .reduce((sum, t) => sum + Number(t.litres), 0);
 
-    // Group sales by user_id
-    PUMP_TRANSACTIONS.forEach((t) => {
-      const userId = t.user_id;
-      const litres = parseFloat(t.litres) || 0;
-
-      staffSalesMap[userId] = staffSalesMap[userId] || {
-        userId: userId,
-        litresSold: 0,
-      };
-      staffSalesMap[userId].litresSold += litres;
-    });
-
-    // Combine with staff names, ROLE, and sort
-    const results = Object.values(staffSalesMap)
-      .map((sale) => {
-        const staffMember = staff.find((s) => s.user_id === sale.userId);
         return {
-          ...sale,
-          name: staffMember
-            ? staffMember.name
-            : `Unknown User (${sale.userId})`,
-          role: staffMember ? staffMember.role : "N/A", // <-- ADDED ROLE FIELD
+          userId: user.id,
+          name: user.name,
+          role: user.role,
+          litresSold: sales,
         };
       })
-      .sort((a, b) => b.litresSold - a.litresSold); // Sort by most litres sold
-
-    return results;
-  }, []);
+      .sort((a, b) => b.litresSold - a.litresSold);
+  }, [users, fuelTransactions]);
 
   const topStaff = staffPerformance.length > 0 ? staffPerformance[0] : null;
 

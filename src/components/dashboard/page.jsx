@@ -1,58 +1,27 @@
+import { useEffect, useState } from "react";
 import PumpCard from "../pumps/pumpcard";
 import Card from "../ui/card";
 
-const pumps = [
-  {
-    id: "PMP001",
-    name: "Pump Alpha (Diesel)",
-    type_of_fuel: "Diesel",
-    current_reading: 234678,
-    litres_capacity: 1200,
-    price_per_liter: 2.58,
-  },
-  {
-    id: "PMP002",
-    name: "Pump Beta (Petrol)",
-    type_of_fuel: "Petrol",
-    current_reading: 987654,
-    litres_capacity: 1500,
-    price_per_liter: 2.02,
-  },
-  {
-    id: "PMP003",
-    name: "Pump Gamma (Diesel)",
-    type_of_fuel: "Diesel",
-    current_reading: 50000,
-    litres_capacity: 800,
-    price_per_liter: 1.76,
-  },
-];
-
-const recentTransactions = [
-  {
-    vehicle: "KCA 123A",
-    fuel: "Petrol",
-    qty: 50,
-    staff: "John",
-    date: "2025-11-13",
-  },
-  {
-    vehicle: "KBA 456B",
-    fuel: "Diesel",
-    qty: 40,
-    staff: "Mary",
-    date: "2025-11-13",
-  },
-  {
-    vehicle: "KDA 789C",
-    fuel: "Petrol",
-    qty: 60,
-    staff: "John",
-    date: "2025-11-12",
-  },
-];
-
 function Dashboard() {
+  const [pumps, setPumps] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/fuel_transactions")
+      .then((response) => response.json())
+      .then((data) => setTransactions(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
+  useEffect(() => {
+    // Fetch pumps data from the backend API
+    fetch("http://localhost:5000/pumps")
+      .then((response) => response.json())
+      .then((data) => setPumps(data))
+      .catch((error) => console.error("Error fetching pumps:", error));
+  }, []);
+
   return (
     <div className="p-6 space-y-8">
       {/* Summary Stats */}
@@ -102,7 +71,7 @@ function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {recentTransactions.map((tx, idx) => (
+            {transactions.map((tx, idx) => (
               <tr key={idx} className="text-center">
                 <td className="border p-2">{tx.vehicle}</td>
                 <td className="border p-2">{tx.fuel}</td>
